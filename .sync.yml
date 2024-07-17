@@ -9,3 +9,8 @@ spec/default_facts.yml:
   default_configs:
     "Layout/BlockAlignment":
        Enabled: False
+Gemfile:
+  optional:
+    ':development':
+      - gem: 'webmock'
+        version: '>= 3.0'

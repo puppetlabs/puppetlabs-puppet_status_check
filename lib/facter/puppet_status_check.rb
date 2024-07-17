@@ -1,7 +1,6 @@
 # puppet_status_check fact aims to have all chunks reporting as true this indicates ideal state
 # any individual chunk reporting false should be alerted on and checked against documentation for next steps
 # Use shared logic from PuppetStatusCheck
-
 Facter.add(:puppet_status_check, type: :aggregate) do
   confine { PuppetStatusCheck.enabled? }
 
@@ -10,16 +9,19 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   require_relative '../shared/puppet_status_check'
 
   chunk(:S0001) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0001')
     # Is the Agent Service Running and Enabled
     { S0001: PuppetStatusCheck.service_running_enabled('puppet') }
   end
 
   chunk(:S0003) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0003')
     # check for noop logic flip as false is the desired state
     { S0003: !Puppet.settings['noop'] }
   end
 
   chunk(:S0004) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0004')
     # Are All Services running
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
@@ -37,6 +39,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0005) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0005')
     next unless ['primary'].include?(PuppetStatusCheck.config('role'))
 
     # Is the CA expiring in the next 90 days
@@ -48,6 +51,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0007) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0007')
     next unless ['primary', 'postgres'].include?(PuppetStatusCheck.config('role'))
 
     begin
@@ -63,6 +67,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0008) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0008')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     # check codedir data mount has at least 20% free
@@ -70,6 +75,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0009) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0009')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     # Is the Pe-puppetsever Service Running and Enabled
@@ -77,6 +83,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0010) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0010')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     # Is the pe-puppetdb Service Running and Enabled
@@ -84,6 +91,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0011) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0011')
     next unless ['primary', 'postgres'].include?(PuppetStatusCheck.config('role'))
 
     # Is the pe-postgres Service Running and Enabled
@@ -99,6 +107,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0012) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0012')
     summary_path = Puppet.settings['lastrunfile']
     next unless File.exist?(summary_path)
 
@@ -114,14 +123,18 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0013) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0013')
     summary_path = Puppet.settings['lastrunfile']
     next unless File.exist?(summary_path)
 
+    lastrunfile = YAML.load_file(summary_path)
+    catalog_application = lastrunfile.dig('time', 'catalog_application')
     # Did catalog apply successfully on last puppet run
-    { S0013: File.open(summary_path).read.include?('catalog_application') }
+    { S0013: !catalog_application.nil? }
   end
 
   chunk(:S0014) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0014')
     next unless ['primary', 'postgres'].include?(PuppetStatusCheck.config('role'))
 
     time_now = Time.now - (Puppet.settings['runinterval'].to_i * 2)
@@ -130,6 +143,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0016) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0016')
     # Puppetserver
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
@@ -146,6 +160,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0017) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0017')
     # PuppetDB
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
@@ -162,6 +177,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0019) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0019')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     response = PuppetStatusCheck.http_get('/status/v1/services/jruby-metrics?level=debug', 8140)
@@ -182,11 +198,13 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0021) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0021')
     # Is there at least 9% memory available
     { S0021: Facter.value(:memory)['system']['capacity'].to_f <= 90 }
   end
 
   chunk(:S0023) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0023')
     # Is the CA_CRL expiring in the next 90 days
     next unless ['primary'].include?(PuppetStatusCheck.config('role'))
     cacrl = Puppet.settings[:cacrl]
@@ -197,6 +215,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0024) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0024')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     # Check discard directory. Newest file should not be less than a run interval old.
@@ -207,13 +226,14 @@ Facter.add(:puppet_status_check, type: :aggregate) do
       newestfile_time = File.mtime(newestfile)
       #  Newest file should be older than 2 run intervals
       { S0024: newestfile_time <= (Time.now - (Puppet.settings['runinterval'] * 2)).utc }
-    #  Should return true if the file is older than two runintervals, or folder is empty, and false if sooner than two run intervals
+      #  Should return true if the file is older than two runintervals, or folder is empty, and false if sooner than two run intervals
     else
       { S0024: true }
     end
   end
 
   chunk(:S0026) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0026')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     response = PuppetStatusCheck.http_get('/status/v1/services/status-service?level=debug', 8140)
@@ -234,6 +254,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0027) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0027')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     response = PuppetStatusCheck.http_get('/status/v1/services?level=debug', 8081)
@@ -254,6 +275,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0029) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0029')
     next unless ['primary', 'postgres'].include?(PuppetStatusCheck.config('role'))
     # check if concurrnet connections to Postgres approaching 90% defined
 
@@ -275,11 +297,13 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0030) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0030')
     # check for use_cached_catalog logic flip as false is the desired state
     { S0030: !Puppet.settings['use_cached_catalog'] }
   end
 
   chunk(:S0033) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0033')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
     hiera_config_path = Puppet.settings['hiera_config']
     if File.exist?(hiera_config_path)
@@ -301,6 +325,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0034) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0034')
     next unless ['primary'].include?(PuppetStatusCheck.config('role'))
 
     # Has not been upgraded / updated in 1 year
@@ -317,6 +342,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0035) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0035')
     # restrict to primary/compiler
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
     # return false if any Warnings appear in the 'puppet module list...'
@@ -324,6 +350,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0036) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0036')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
     str = File.read('/etc/puppetlabs/puppetserver/conf.d/puppetserver.conf')
     max_queued_requests = str.match(%r{max-queued-requests: (\d+)})
@@ -335,6 +362,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0038) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0038')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
     response = PuppetStatusCheck.http_get('/puppet/v3/environments', 8140)
     if response
@@ -354,6 +382,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0039) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0039')
     # PuppetServer
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
@@ -380,6 +409,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:S0045) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('S0045')
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
     begin
       response = PuppetStatusCheck.http_get('/status/v1/services/jruby-metrics?level=debug', 8140)
@@ -403,6 +433,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:AS001) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('AS001')
     # Is the hostcert expiring within 90 days
     #
     next unless File.exist?(Puppet.settings['hostcert'])
@@ -414,12 +445,14 @@ Facter.add(:puppet_status_check, type: :aggregate) do
   end
 
   chunk(:AS003) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('AS003')
     # certname is not configured in section other than [main]
     #
     { AS003: !Puppet.settings.set_in_section?(:certname, :agent) && !Puppet.settings.set_in_section?(:certname, :server) && !Puppet.settings.set_in_section?(:certname, :user) }
   end
 
   chunk(:AS004) do
+    next if PuppetStatusCheck.config('indicator_exclusions').include?('AS004')
     # Is the host copy of the crl expiring in the next 90 days
     hostcrl = Puppet.settings[:hostcrl]
     next unless File.exist?(hostcrl)
