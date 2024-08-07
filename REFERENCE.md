@@ -79,7 +79,7 @@ Data type: `Array[String[1]]`
 List of disabled indicators, place any indicator ids you do not wish to
 report on in this list
 
-Default value: `['AS003', 'S0006']`
+Default value: `[]`
 
 ##### <a name="-puppet_status_check--checks"></a>`checks`
 
