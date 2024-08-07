@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.9.3](https://github.com/puppetlabs/puppetlabs-puppet_status_check/tree/v0.9.3) - 2024-08-07
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-puppet_status_check/compare/v0.9.2...v0.9.3)
+
+### Other
+
+- update release.yml [#14](https://github.com/puppetlabs/puppetlabs-puppet_status_check/pull/14) ([garrettrowell](https://github.com/garrettrowell))
+- Indicator exclusions affect fact output + Spec testing [#11](https://github.com/puppetlabs/puppetlabs-puppet_status_check/pull/11) ([garrettrowell](https://github.com/garrettrowell))
+- Create LICENSE [#10](https://github.com/puppetlabs/puppetlabs-puppet_status_check/pull/10) ([binford2k](https://github.com/binford2k))
+
 ## [v0.9.2](https://github.com/puppetlabs/puppetlabs-puppet_status_check/tree/v0.9.2) - 2024-05-22
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-puppet_status_check/compare/v0.9.1...v0.9.2)
