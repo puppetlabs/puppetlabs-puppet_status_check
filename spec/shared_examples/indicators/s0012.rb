@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 shared_examples 'S0012' do |params = {}|
-  context 'produced a report during last run interval' do
+  context 'when a report was produced during the last run interval' do
     before :each do
       allow(File).to receive(:exist?).and_call_original
       allow(File).to receive(:exist?).with(Puppet.settings[:lastrunfile]).and_return(true)
@@ -11,7 +13,7 @@ shared_examples 'S0012' do |params = {}|
     it { is_expected.to include(params[:indicator] => true) }
   end
 
-  context 'did not produce a report during last run interval' do
+  context 'when no report was produced during the last run interval' do
     before :each do
       allow(File).to receive(:exist?).and_call_original
       allow(File).to receive(:exist?).with(Puppet.settings[:lastrunfile]).and_return(true)

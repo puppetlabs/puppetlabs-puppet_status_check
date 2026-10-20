@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 shared_examples 'S0011' do |params = {}|
   context 'when postgres service running and enabled' do
     before :each do
-      allow(PuppetStatusCheck).to receive(:postgres_service_name).and_return('postgresql@14-main')
-      allow(PuppetStatusCheck).to receive(:service_running_enabled).and_return(true)
+      allow(PuppetStatusCheck).to receive_messages(postgres_service_name: 'postgresql@14-main', service_running_enabled: true)
     end
 
     it { is_expected.to have_key(params[:indicator]) }
@@ -11,8 +12,7 @@ shared_examples 'S0011' do |params = {}|
 
   context 'when postgres service is not running and enabled' do
     before :each do
-      allow(PuppetStatusCheck).to receive(:postgres_service_name).and_return('postgresql@14-main')
-      allow(PuppetStatusCheck).to receive(:service_running_enabled).and_return(false)
+      allow(PuppetStatusCheck).to receive_messages(postgres_service_name: 'postgresql@14-main', service_running_enabled: false)
     end
 
     it { is_expected.to have_key(params[:indicator]) }

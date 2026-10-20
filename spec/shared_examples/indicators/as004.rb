@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'AS004' do |params = {}|
   before :each do
     Puppet[:hostcrl] = File.join(RSPEC_ROOT, 'fixtures/certs/cacrl')

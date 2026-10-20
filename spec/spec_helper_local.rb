@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'webmock/rspec'
 
-RSPEC_ROOT = File.expand_path(File.dirname(__FILE__))
+RSPEC_ROOT = __dir__
 MODULE_ROOT = File.expand_path(File.dirname(RSPEC_ROOT))
 
 # load in shared_examples

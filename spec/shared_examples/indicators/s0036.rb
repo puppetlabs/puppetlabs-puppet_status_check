@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0036' do |params = {}|
   let(:server_config_file) { '/etc/puppetlabs/puppetserver/conf.d/puppetserver.conf' }
 

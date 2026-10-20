@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0004' do |params = {}|
   before :each do
     Puppet[:hostprivkey] = File.join(RSPEC_ROOT, 'fixtures/certs/hostprivkey')
@@ -13,10 +15,10 @@ shared_examples 'S0004' do |params = {}|
     let(:body) do
       {
         'puppet-profiler' => { 'state' => 'running' },
-        'jruby-metrics'   => { 'state' => 'running' },
-        'ca'              => { 'state' => 'running' },
-        'master'          => { 'state' => 'running' },
-        'server'          => { 'state' => 'running' },
+        'jruby-metrics' => { 'state' => 'running' },
+        'ca' => { 'state' => 'running' },
+        'master' => { 'state' => 'running' },
+        'server' => { 'state' => 'running' },
       }
     end
 
@@ -33,10 +35,10 @@ shared_examples 'S0004' do |params = {}|
     let(:body) do
       {
         'puppet-profiler' => { 'state' => 'error' },
-        'jruby-metrics'   => { 'state' => 'error' },
-        'ca'              => { 'state' => 'error' },
-        'master'          => { 'state' => 'error' },
-        'server'          => { 'state' => 'error' },
+        'jruby-metrics' => { 'state' => 'error' },
+        'ca' => { 'state' => 'error' },
+        'master' => { 'state' => 'error' },
+        'server' => { 'state' => 'error' },
       }
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0017' do |params = {}|
   let(:logdir) { '/var/log/puppetlabs/puppetdb' }
   let(:err_pid) { File.join(logdir, 'puppetdb_err_pid.log') }

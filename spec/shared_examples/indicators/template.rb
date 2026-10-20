@@ -1,16 +1,12 @@
-shared_examples 'XXXXX' do |params = {}|
-  context 'TODO indicator positive check' do
-    before :each do
-    end
+# frozen_string_literal: true
 
+shared_examples 'XXXXX' do |params = {}|
+  context 'when the indicator passes' do
     it { is_expected.to have_key(params[:indicator]) }
     it { is_expected.to include(params[:indicator] => true) }
   end
 
-  context 'TODO indicator negative check' do
-    before :each do
-    end
-
+  context 'when the indicator fails' do
     it { is_expected.to have_key(params[:indicator]) }
     it { is_expected.to include(params[:indicator] => false) }
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0033' do |params = {}|
   context 'with hiera5 config' do
     before :each do

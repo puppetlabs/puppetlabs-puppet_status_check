@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0024' do |params = {}|
   let(:discard_dir) { '/opt/puppetlabs/server/data/puppetdb/stockpile/discard' }
   let(:testfile) { File.join(discard_dir, 'test_file') }

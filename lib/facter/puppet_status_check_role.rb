@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Facter.add(:puppet_status_check_role) do
   confine { PuppetStatusCheck.enabled? }
   setcode do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0003' do |params = {}|
   context 'when noop = false' do
     before :each do

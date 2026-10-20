@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0026' do |params = {}|
   before :each do
     Puppet[:hostprivkey] = File.join(RSPEC_ROOT, 'fixtures/certs/hostprivkey')
@@ -11,8 +13,8 @@ shared_examples 'S0026' do |params = {}|
 
   context 'when puppetserver jvm heap 33GB' do
     let(:body) do
-      { 'status': { 'experimental': { 'jvm-metrics': { 'heap-memory': {
-        'init': 33_000_000_000,
+      { status: { experimental: { 'jvm-metrics': { 'heap-memory': {
+        init: 33_000_000_000,
       } } } } }
     end
 
@@ -27,8 +29,8 @@ shared_examples 'S0026' do |params = {}|
 
   context 'when puppetserver jvm heap 52GB' do
     let(:body) do
-      { 'status': { 'experimental': { 'jvm-metrics': { 'heap-memory': {
-        'init': 52_000_000_000,
+      { status: { experimental: { 'jvm-metrics': { 'heap-memory': {
+        init: 52_000_000_000,
       } } } } }
     end
 
@@ -43,8 +45,8 @@ shared_examples 'S0026' do |params = {}|
 
   context 'when puppetserver jvm heap 44GB' do
     let(:body) do
-      { 'status': { 'experimental': { 'jvm-metrics': { 'heap-memory': {
-        'init': 44_000_000_000,
+      { status: { experimental: { 'jvm-metrics': { 'heap-memory': {
+        init: 44_000_000_000,
       } } } } }
     end
 

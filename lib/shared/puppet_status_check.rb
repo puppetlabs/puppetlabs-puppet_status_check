@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'puppet'
 require 'json'
 require 'net/http'
 require 'openssl'
 
 # PuppetStatusCheck - Shared code for puppet_status_check facts
-module PuppetStatusCheck
+module PuppetStatusCheck # rubocop:disable Metrics/ModuleLength
   class << self
     attr_accessor :facter_timeout
   end
@@ -62,7 +64,7 @@ module PuppetStatusCheck
   # Return the name of the postgresql service for the current OS
   # @return [String] The name of the postgresql service
   def postgres_service_name
-    config('postgresql_service') % { 'pg_major_version': pg_major_version }
+    config('postgresql_service') % { pg_major_version: pg_major_version }
   end
 
   # Checks if passed service file exists in correct directory for the OS
@@ -82,7 +84,7 @@ module PuppetStatusCheck
   # @param path [String] The API path to query.  Should include a '/' prefix and query parameters
   # @param port [Integer] The port to use
   # @param host [String] The FQDN to use in making the connection.  Defaults to the Puppet certname
-  def http_get(path, port, host = Puppet[:certname])
+  def http_get(path, port, host = Puppet[:certname]) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     # Use an instance variable to only create an SSLContext once
     @ssl_context ||= Puppet::SSL::SSLContext.new(
       cacerts: Puppet[:localcacert],
@@ -125,7 +127,7 @@ module PuppetStatusCheck
   end
 
   def postgresql_version
-    @pg_version ||= pg_config('version')&.match(%r{PostgreSQL (\d+)\.(\d+)})
+    @postgresql_version ||= pg_config('version')&.match(%r{PostgreSQL (\d+)\.(\d+)})
   end
 
   def pg_major_version
@@ -167,7 +169,7 @@ module PuppetStatusCheck
     require 'sys/filesystem'
 
     stat = Sys::Filesystem.stat(path)
-    (stat.blocks_available.to_f / stat.blocks.to_f * 100).to_i
+    (stat.blocks_available.to_f / stat.blocks * 100).to_i
   rescue LoadError => e
     Facter.warn("Error in fact 'puppet_status_check': #{e.message}")
     Facter.debug(e.backtrace)

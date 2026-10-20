@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0035' do |params = {}|
   let(:cmd) { '/opt/puppetlabs/bin/puppet module list --tree 2>&1' }
 

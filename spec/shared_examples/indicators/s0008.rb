@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0008' do |params = {}|
   context 'when codedir has 21% disk free' do
     before :each do

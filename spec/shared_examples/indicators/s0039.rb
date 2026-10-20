@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0039' do |params = {}|
   let(:logfile) { File.join(File.dirname(Puppet.settings['logdir']), 'puppetserver/puppetserver-access.log') }
   let(:timestamp) { '[06/Aug/2024:03:16:12 +0000]' }

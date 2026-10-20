@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 shared_examples 'S0029' do |params = {}|
   context 'when less than 90% connections' do
     before :each do
-      allow(PuppetStatusCheck).to receive(:max_connections).and_return(10)
-      allow(PuppetStatusCheck).to receive(:cur_connections).and_return(8)
+      allow(PuppetStatusCheck).to receive_messages(max_connections: 10, cur_connections: 8)
     end
 
     it { is_expected.to have_key(params[:indicator]) }
@@ -11,8 +12,7 @@ shared_examples 'S0029' do |params = {}|
 
   context 'when greater than 90% connections' do
     before :each do
-      allow(PuppetStatusCheck).to receive(:max_connections).and_return(10)
-      allow(PuppetStatusCheck).to receive(:cur_connections).and_return(10)
+      allow(PuppetStatusCheck).to receive_messages(max_connections: 10, cur_connections: 10)
     end
 
     it { is_expected.to have_key(params[:indicator]) }

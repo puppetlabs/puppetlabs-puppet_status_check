@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 shared_examples 'S0007' do |params = {}|
   let(:datadir) { '/var/lib/postgresql/14/main' }
-  context 'More than 20% disk free PostgreSQL data partition' do
+  context 'with more than 20% disk free on the PostgreSQL data partition' do
     before :each do
       allow(PuppetStatusCheck).to receive(:pg_data_dir).and_return(datadir)
       allow(PuppetStatusCheck).to receive(:filesystem_free).with(datadir).and_return(21)
@@ -10,7 +12,7 @@ shared_examples 'S0007' do |params = {}|
     it { is_expected.to include(params[:indicator] => true) }
   end
 
-  context 'Less than 20% disk free PostgreSQL data partition' do
+  context 'with less than 20% disk free on the PostgreSQL data partition' do
     before :each do
       allow(PuppetStatusCheck).to receive(:pg_data_dir).and_return(datadir)
       allow(PuppetStatusCheck).to receive(:filesystem_free).with(datadir).and_return(19)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0014' do |params = {}|
   let(:stockpile) { '/opt/puppetlabs/server/data/puppetdb/stockpile/cmd/q' }
   let(:testfile) { File.join(stockpile, 'test_file') }

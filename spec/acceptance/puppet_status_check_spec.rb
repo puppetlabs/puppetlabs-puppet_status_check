@@ -5,19 +5,21 @@ require 'fileutils'
 
 # Tests puppet_status_check class for default behaviours, no notification on all facts passing
 # Ensures default PE deployment passes all test cases
+# rubocop:disable RSpec/ExampleLength
 describe 'puppet_status_check class' do
-  context 'activates module default parameters' do
-    it 'applies the class with default parameters' do
+  context 'with module default parameters' do
+    it 'applies the class with default parameters' do # rubocop:disable RSpec/NoExpectationExample
       pp = <<-MANIFEST
               class {'puppet_status_check':
             indicator_exclusions => ['S0001','S0019'],
             }
-       MANIFEST
+      MANIFEST
       idempotent_apply(pp)
     end
+
     # Test Confirms all facts are false which is another indicator the class is performing correctly
     describe 'check no puppet_status_check fact is false' do
-      it 'if idempotent all facts should be true' do
+      it 'if idempotent all facts should be true' do # rubocop:disable RSpec/MultipleExpectations
         expect(host_inventory['facter']['puppet_status_check'].size).to eq(41)
         expect(host_inventory['facter']['puppet_status_check'].filter { |_k, v| !v }).to be_empty
       end
@@ -27,7 +29,7 @@ describe 'puppet_status_check class' do
     # if the same fact is placed in the indicator_exclusions parameter
     # This test also serves as confirmation fact S0001 is working Correctly
     describe 'check notifications work as expected' do
-      it 'if S0001 reports false notify with message' do
+      it 'if S0001 reports false notify with message' do # rubocop:disable RSpec/MultipleExpectations
         pp = <<-MANIFEST
         include puppet_status_check
         MANIFEST
@@ -37,7 +39,8 @@ describe 'puppet_status_check class' do
         expect(output).to match('S0001 is at fault. The indicator S0001 Checks that Puppet agent service is running. Refer to documentation for required action.')
         expect(result.stdout).to match(%r{false})
       end
-      it 'if in the exclude list a parameter should not notify' do
+
+      it 'if in the exclude list a parameter should not notify' do # rubocop:disable RSpec/NoExpectationExample
         ppp = <<-MANIFEST
         class {'puppet_status_check':
             indicator_exclusions => ['S0001','S0019'],
@@ -56,6 +59,7 @@ describe 'puppet_status_check class' do
         expect(result.stdout).to match(%r{false})
         run_shell('puppet config set noop false', expect_failures: false)
       end
+
       it 'if S0004 conditions for false are met' do
         run_shell('puppet resource service pe-puppetserver  ensure=stopped')
         result = run_shell('facter -p puppet_status_check.S0004')
@@ -70,7 +74,7 @@ describe 'puppet_status_check class' do
         run_shell('systemctl start puppet_puppetserver-metrics.timer')
       end
 
-      context 'when filesystem usage exceeds 80%' do
+      context 'when filesystem usage exceeds 80%' do # rubocop:disable RSpec/NestedGroups
         before(:all) do
           run_shell('fallocate -l $(($(facter -p mountpoints.\'/\'.available_bytes)-1073741824)) /largefile.txt')
         end
@@ -110,24 +114,28 @@ describe 'puppet_status_check class' do
         expect(result.stdout).to match(%r{false})
         run_shell('puppet resource service pe-postgresql ensure=running')
       end
+
       it 'if S0012 conditions for false are met' do
         run_shell('puppet config set runinterval 20')
         result = run_shell('facter -p puppet_status_check.S0012')
         expect(result.stdout).to match(%r{false})
         run_shell('puppet config set runinterval 1800')
       end
+
       it 'if S0013 conditions for false are met' do
         run_shell('export lastrunfile=$(puppet config print lastrunfile) && cp $lastrunfile ${lastrunfile}.bk  && sed -i \'/catalog_application/d\' $lastrunfile')
         result = run_shell('facter -p puppet_status_check.S0013')
         expect(result.stdout).to match(%r{false})
         run_shell('export lastrunfile=$(puppet config print lastrunfile) && mv -f ${lastrunfile}.bk $lastrunfile')
       end
+
       it 'if S0014 conditions for false are met' do
         run_shell('touch -d "65 minutes ago" /opt/puppetlabs/server/data/puppetdb/stockpile/cmd/q/acceptance.txt')
         result = run_shell('facter -p puppet_status_check.S0014')
         expect(result.stdout).to match(%r{false})
         run_shell('rm -f /opt/puppetlabs/server/data/puppetdb/stockpile/cmd/q/acceptance.txt')
       end
+
       it 'if S0016 conditions for false are met' do
         run_shell('export logdir=$(puppet config print logdir) &&
          cp $logdir/../puppetserver/puppetserver.log $logdir/../puppetserver/puppetserver.log.bk &&
@@ -137,12 +145,14 @@ describe 'puppet_status_check class' do
         run_shell('export logdir=$(puppet config print logdir) && rm -f $logdir/../puppetserver/puppetserver.log &&
         mv $logdir/../puppetserver/puppetserver.log.bk $logdir/../puppetserver/puppetserver.log')
       end
+
       it 'if S0016 returns false when recent err_pid files are present' do
         run_shell('export logdir=$(puppet config print logdir) && touch $logdir/../puppetserver/test_err_pid_123.log')
         result = run_shell('facter -p puppet_status_check.S0016')
         expect(result.stdout).to match(%r{false})
         run_shell('export logdir=$(puppet config print logdir) && rm -f logdir/../puppetserver/test_err_pid_123.log')
       end
+
       it 'if S0017 conditions for false are met' do
         run_shell('export logdir=$(puppet config print logdir) && cp $logdir/../puppetdb/puppetdb.log $logdir/../puppetdb/puppetdb.log.bk &&
          echo "java.lang.OutOfMemoryError" >> $logdir/../puppetdb/puppetdb.log')
@@ -151,12 +161,14 @@ describe 'puppet_status_check class' do
         run_shell('export logdir=$(puppet config print logdir) && rm -f $logdir/../puppetdb/puppetdb.log &&
         mv $logdir/../puppetdb/puppetdb.log.bk $logdir/../puppetdb/puppetdb.log')
       end
+
       it 'if S0017 returns false when recent err_pid files are present' do
         run_shell('export logdir=$(puppet config print logdir) && touch $logdir/../puppetdb/test_err_pid_123.log')
         result = run_shell('facter -p puppet_status_check.S0017')
         expect(result.stdout).to match(%r{false})
         run_shell('export logdir=$(puppet config print logdir) && rm -f logdir/../puppetdb/test_err_pid_123.log')
       end
+
       # Removing but not deleting test for future consumption
       #       it 'if S0019 returns false when Average Free JRubies is > 0.9' do
       #         run_shell('puppet agent --enable; puppet agent -t; puppet agent -t; puppet agent -t; puppet agent --disable', expect_failures: true)
@@ -181,9 +193,10 @@ describe 'puppet_status_check class' do
         expect(result.stdout).to match(%r{false})
         run_shell('rm -f /etc/puppetlabs/facter/facts.d/memory.json')
       end
+
       it 'if S0022 conditions for false are met' do
         run_shell('mv /etc/puppetlabs/license.key /tmp/license.key')
-        myexpiredlicensefile = <<~EOF
+        myexpiredlicensefile = <<~LICENSE
           #######################
           #  Begin License File #
           #######################
@@ -197,39 +210,43 @@ describe 'puppet_status_check class' do
           #####################
           #  End License File #
           #####################
-          EOF
+        LICENSE
         write_file(myexpiredlicensefile, '/etc/puppetlabs/license.key')
         result = run_shell('facter -p puppet_status_check.S0022')
         expect(result.stdout).to match(%r{false})
         run_shell('mv -f /tmp/license.key /etc/puppetlabs/license.key')
       end
+
       it 'if S0024 conditions for false are met' do
         run_shell('touch -d "30 minutes ago"  /opt/puppetlabs/server/data/puppetdb/stockpile/discard/test.file')
         result = run_shell('facter -p puppet_status_check.S0024')
         expect(result.stdout).to match(%r{false})
         run_shell('touch -d "2 days ago"  /opt/puppetlabs/server/data/puppetdb/stockpile/discard/test.file')
       end
+
       it 'if S0030 conditions for false are met' do
         run_shell('puppet config set use_cached_catalog true', expect_failures: false)
         result = run_shell('facter -p puppet_status_check.S0030')
         expect(result.stdout).to match(%r{false})
         run_shell('puppet config set use_cached_catalog false', expect_failures: false)
       end
+
       it 'if S0031 conditions for false are met' do
         run_shell('mkdir -p /opt/puppetlabs/server/data/packages/public/2018.1.5/el-7-x86_64-5.5.8')
         result = run_shell('facter -p puppet_status_check.S0031')
         expect(result.stdout).to match(%r{false})
         run_shell('rm -rf /opt/puppetlabs/server/data/packages/public/2018.1.5')
       end
+
       it 'if S0039 conditions for false are met' do
         run_shell('export logdir=$(puppet config print logdir) &&
          cp $logdir/../puppetserver/puppetserver-access.log $logdir/../puppetserver/puppetserver-access.log.bk && sed -i \'s/ 200 / 503 /\' /var/log/puppetlabs/puppetserver/puppetserver-access.log')
-        # rubocop:enable Layout/LineLength
         result = run_shell('facter -p puppet_status_check.S0039')
         expect(result.stdout).to match(%r{false})
         run_shell('export logdir=$(puppet config print logdir) && rm -f $logdir/../puppetserver/puppetserver-access.log &&
         mv $logdir/../puppetserver/puppetserver-access.log.bk $logdir/../puppetserver/puppetserver-access.log')
       end
+
       it 'if S0033 conditions for false are met' do
         run_shell('cat <<EOF > /etc/puppetlabs/puppet/hiera.yaml
 ---
@@ -274,18 +291,21 @@ hierarchy:
 - name: Classifier Configuration Data
   data_hash: classifier_data')
       end
+
       it 'if S0034 conditions for false are met' do
         run_shell('touch -d "2 years ago"  /opt/puppetlabs/server/pe_build')
         result = run_shell('facter -p puppet_status_check.S0034')
         expect(result.stdout).to match(%r{false})
         run_shell('touch -d "1 day ago"  /opt/puppetlabs/server/pe_build')
       end
+
       it 'S0035 conditions for false are met' do
         run_shell('puppet module install puppetlabs-ntp --version 9.1.0; puppet module install puppetlabs-stdlib --version 0.1.5 --force')
         result = run_shell('facter -p puppet_status_check.S0035')
         expect(result.stdout).to match(%r{false})
         run_shell('puppet module uninstall puppetlabs-ntp --version 9.1.0 --force; puppet module uninstall puppetlabs-stdlib --version 0.1.5 --force')
       end
+
       it 'if S0036 conditions for false are met' do
         present = <<-PUPPETCODE
         pe_hocon_setting { 'jruby-puppet.max-queued-requests':
@@ -321,18 +341,21 @@ hierarchy:
         expect(result.stdout).to match(%r{false})
         run_shell('systemctl start puppet_system_processes-metrics.timer')
       end
+
       it 'if S0042 conditions for false are met' do
         run_shell('systemctl stop pe-orchestration-services')
         result = run_shell('facter -p puppet_status_check.S0042')
         expect(result.stdout).to match(%r{false})
         run_shell('systemctl start pe-orchestration-services')
       end
+
       it 'if S0044 conditions for false are met' do
         run_shell('puppet config set --section master node_terminus exec')
         result = run_shell('facter -p puppet_status_check.S0044')
         expect(result.stdout).to match(%r{false})
         run_shell('puppet config set --section master node_terminus classifier')
       end
+
       it 'if S0045 conditions for false are met' do
         manifest = <<-PUPPETCODE
         pe_hocon_setting { 'jruby-puppet.max-active-instances':
@@ -362,3 +385,4 @@ hierarchy:
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength

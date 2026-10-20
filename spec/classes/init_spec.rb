@@ -17,23 +17,15 @@ describe 'puppet_status_check' do
       context "with $indicator_exclusions => ['S0001']" do
         let(:params) do
           {
-            'indicator_exclusions' => ['S0001']
+            'indicator_exclusions' => ['S0001'],
           }
         end
 
-        it do
-          is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with(
-            'content' => %r{.*\"indicator_exclusions\": "\[S0001\]".*},
-          )
-        end
+        it { is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with('content' => %r{.*"indicator_exclusions": "\[S0001\]".*}) }
       end
 
       context 'with $indicator_exclusions unset' do
-        it do
-          is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with(
-            'content' => %r{.*\"indicator_exclusions\": "\[\]".*},
-          )
-        end
+        it { is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with('content' => %r{.*"indicator_exclusions": "\[\]".*}) }
       end
 
       context 'when facts.puppet_status_check.S0001 returns false' do
@@ -42,14 +34,12 @@ describe 'puppet_status_check' do
             {
               'puppet_status_check' => {
                 'S0001' => false,
-              }
+              },
             },
           )
         end
 
-        it do
-          is_expected.to contain_notify('puppet_status_check S0001')
-        end
+        it { is_expected.to contain_notify('puppet_status_check S0001') }
       end
 
       context 'when facts.puppet_status_check.S0001 returns true' do
@@ -58,42 +48,32 @@ describe 'puppet_status_check' do
             {
               'puppet_status_check' => {
                 'S0001' => true,
-              }
+              },
             },
           )
         end
 
-        it do
-          is_expected.not_to contain_notify('puppet_status_check S0001')
-        end
+        it { is_expected.not_to contain_notify('puppet_status_check S0001') }
       end
 
       context 'when $enabled => true' do
         let(:params) do
           {
-            'enabled' => true
+            'enabled' => true,
           }
         end
 
-        it do
-          is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with(
-            'ensure' => 'file',
-          )
-        end
+        it { is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with('ensure' => 'file') }
       end
 
       context 'when $enabled => false' do
         let(:params) do
           {
-            'enabled' => false
+            'enabled' => false,
           }
         end
 
-        it do
-          is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with(
-            'ensure' => 'absent',
-          )
-        end
+        it { is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with('ensure' => 'absent') }
       end
     end
   end
