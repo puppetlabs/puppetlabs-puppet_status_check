@@ -1,4 +1,8 @@
-shared_context 'excluded' do |params = {}|
+# frozen_string_literal: true
+
+shared_context 'excluded' do |params = {}| # rubocop:disable RSpec/ContextWording
+  include_context 'with indicator inputs'
+
   before :each do
     config(role: params[:role], indicator_exclusions: [params[:indicator]])
   end

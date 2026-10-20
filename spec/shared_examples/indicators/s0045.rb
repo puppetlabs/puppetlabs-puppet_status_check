@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0045' do |params = {}|
   before :each do
     Puppet[:hostprivkey] = File.join(RSPEC_ROOT, 'fixtures/certs/hostprivkey')
@@ -13,8 +15,8 @@ shared_examples 'S0045' do |params = {}|
     let(:body) do
       {
         'status' => { 'experimental' => { 'metrics' => {
-          'num-jrubies' => 11
-        } } }
+          'num-jrubies' => 11,
+        } } },
       }
     end
 
@@ -31,8 +33,8 @@ shared_examples 'S0045' do |params = {}|
     let(:body) do
       {
         'status' => { 'experimental' => { 'metrics' => {
-          'num-jrubies' => 13
-        } } }
+          'num-jrubies' => 13,
+        } } },
       }
     end
 

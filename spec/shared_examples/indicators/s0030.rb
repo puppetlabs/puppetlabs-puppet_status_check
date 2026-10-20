@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0030' do |params = {}|
   context 'when use_cached_catalog = false' do
     before :each do

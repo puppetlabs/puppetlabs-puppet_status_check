@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'AS003' do |params = {}|
   context 'when certname in agent section' do
     before :each do

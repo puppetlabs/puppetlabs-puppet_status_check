@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0001' do |params = {}|
   context 'when puppet service running and enabled' do
     before :each do

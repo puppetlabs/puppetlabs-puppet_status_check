@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 shared_examples 'S0035' do |params = {}|
-  let(:cmd) { '/opt/puppetlabs/bin/puppet module list --tree 2>&1' }
+  let(:cmd) { '/opt/puppetlabs/bin/puppet module list --tree' }
 
   context 'when no warnings' do
     before :each do
-      allow_any_instance_of(Kernel).to receive(:`).with(cmd).and_return('') # rubocop:disable RSpec/AnyInstance
+      allow(Puppet::Util::Execution).to receive(:execute).with(cmd, failonfail: false, combine: true).and_return('')
     end
 
     it { is_expected.to have_key(params[:indicator]) }
@@ -12,7 +14,7 @@ shared_examples 'S0035' do |params = {}|
 
   context 'when warning(s)' do
     before :each do
-      allow_any_instance_of(Kernel).to receive(:`).with(cmd).and_return('Warning: ') # rubocop:disable RSpec/AnyInstance
+      allow(Puppet::Util::Execution).to receive(:execute).with(cmd, failonfail: false, combine: true).and_return('Warning: ')
     end
 
     it { is_expected.to have_key(params[:indicator]) }

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 shared_examples 'S0013' do |params = {}|
-  context 'catalog successfully applied last run' do
+  context 'when the catalog successfully applied last run' do
     before :each do
       allow(File).to receive(:exist?).and_call_original
       allow(File).to receive(:exist?).with(Puppet.settings[:lastrunfile]).and_return(true)
@@ -10,7 +12,7 @@ shared_examples 'S0013' do |params = {}|
     it { is_expected.to include(params[:indicator] => true) }
   end
 
-  context 'catalog unsuccessfully applied last run' do
+  context 'when the catalog unsuccessfully applied last run' do
     before :each do
       allow(File).to receive(:exist?).and_call_original
       allow(File).to receive(:exist?).with(Puppet.settings[:lastrunfile]).and_return(true)

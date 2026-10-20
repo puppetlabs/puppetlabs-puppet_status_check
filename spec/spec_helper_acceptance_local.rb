@@ -3,7 +3,7 @@
 require 'singleton'
 require 'serverspec'
 require 'puppetlabs_spec_helper/module_spec_helper'
-include PuppetLitmus
+include PuppetLitmus # rubocop:disable Style/MixinUsage
 
 RSpec.configure do |c|
   c.mock_with :rspec

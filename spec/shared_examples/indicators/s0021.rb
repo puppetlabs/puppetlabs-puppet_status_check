@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0021' do |params = {}|
   context 'when greater than 9% memory available' do
     before :each do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0019' do |params = {}|
   before :each do
     Puppet[:hostprivkey] = File.join(RSPEC_ROOT, 'fixtures/certs/hostprivkey')
@@ -11,8 +13,8 @@ shared_examples 'S0019' do |params = {}|
 
   context 'when average-free-jrubies 1.0' do
     let(:body) do
-      { 'status': { 'experimental': { 'metrics': {
-        'average-free-jrubies': 1.0
+      { status: { experimental: { metrics: {
+        'average-free-jrubies': 1.0,
       } } } }
     end
 
@@ -27,8 +29,8 @@ shared_examples 'S0019' do |params = {}|
 
   context 'when average-free-jrubies 0.5' do
     let(:body) do
-      { 'status': { 'experimental': { 'metrics': {
-        'average-free-jrubies': 0.5
+      { status: { experimental: { metrics: {
+        'average-free-jrubies': 0.5,
       } } } }
     end
 

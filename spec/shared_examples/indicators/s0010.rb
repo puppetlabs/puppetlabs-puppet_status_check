@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'S0010' do |params = {}|
   context 'when puppetdb service running' do
     before :each do
