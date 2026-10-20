@@ -8,6 +8,8 @@ shared_examples 'S0016' do |params = {}|
   before :each do
     Puppet[:logdir] = '/var/log/puppetlabs/puppet'
     Puppet[:runinterval] = 1800
+    allow(File).to receive(:exist?).and_call_original
+    allow(File).to receive(:exist?).with(File.join(logdir, 'puppetserver.log')).and_return(true)
   end
 
   context 'when no err_pid.log and oom err not in puppetserver.log' do
@@ -28,6 +30,20 @@ shared_examples 'S0016' do |params = {}|
 
     it { is_expected.to have_key(params[:indicator]) }
     it { is_expected.to include(params[:indicator] => false) }
+  end
+
+  context 'when puppetserver.log is missing' do
+    before :each do
+      allow(Dir).to receive(:glob).with(File.join(logdir, '*_err_pid*.log')).and_return([])
+      allow(File).to receive(:exist?).with(File.join(logdir, 'puppetserver.log')).and_return(false)
+    end
+
+    it 'does not run tail' do
+      expect_any_instance_of(Kernel).not_to receive(:`).with(cmd) # rubocop:disable RSpec/AnyInstance
+      puppet_status_check
+    end
+
+    it { is_expected.to include(params[:indicator] => true) }
   end
 
   context 'when puppetserver_err_pid.log exists' do

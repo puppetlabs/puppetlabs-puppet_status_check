@@ -159,6 +159,8 @@ Facter.add(:puppet_status_check, type: :aggregate) do
     error_pid_log = Dir.glob("#{log_path}*_err_pid*.log").find { |f| time_now.to_i < File.mtime(f).to_i }
     if error_pid_log.nil?
       log_file = "#{log_path}puppetserver.log"
+      next { S0016: true } unless File.exist?(log_file)
+
       search_for_error = `tail -n 250 #{log_file} | grep 'java.lang.OutOfMemoryError'`
       { S0016: search_for_error.empty? }
     else
@@ -176,6 +178,8 @@ Facter.add(:puppet_status_check, type: :aggregate) do
     error_pid_log = Dir.glob("#{log_path}*_err_pid*.log").find { |f| time_now.to_i < File.mtime(f).to_i }
     if error_pid_log.nil?
       log_file = "#{log_path}puppetdb.log"
+      next { S0017: true } unless File.exist?(log_file)
+
       search_for_error = `tail -n 250 #{log_file} | grep 'java.lang.OutOfMemoryError'`
       { S0017: search_for_error.empty? }
     else
@@ -368,6 +372,9 @@ Facter.add(:puppet_status_check, type: :aggregate) do
     else
       { S0036: max_queued_requests[1].to_i < 151 }
     end
+  rescue Errno::ENOENT, Errno::EACCES => e
+    Facter.warn("Error in fact 'puppet_status_check.S0036' when reading puppetserver configuration: #{e.message}")
+    { S0036: false }
   end
 
   chunk(:S0038) do

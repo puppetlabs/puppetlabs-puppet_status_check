@@ -21,7 +21,7 @@ describe 'Fact puppet_status_check', type: :fact do
 
   # Helpers for each roles indicators
   indicators = {
-    agent: ['AS003', 'S0001', 'S0003', 'S0021', 'S0030'],
+    agent: ['AS001', 'AS003', 'AS004', 'S0001', 'S0003', 'S0012', 'S0013', 'S0021', 'S0030'],
     compiler: [
       'AS001', 'AS003', 'AS004', 'S0001', 'S0003', 'S0004', 'S0008',
       'S0009', 'S0010', 'S0012', 'S0013', 'S0016', 'S0017', 'S0019',
@@ -49,6 +49,8 @@ describe 'Fact puppet_status_check', type: :fact do
       end
 
       context 'with default configuration' do
+        include_context 'with indicator inputs'
+
         before :each do
           config(role: role.to_s)
         end
