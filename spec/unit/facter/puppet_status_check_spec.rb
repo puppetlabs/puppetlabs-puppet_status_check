@@ -80,6 +80,16 @@ describe 'Fact puppet_status_check', type: :fact do
     end
   end
 
+  describe '.psql_return_result' do
+    it 'returns nil when binary directory discovery and command execution fail' do
+      command = %(su postgres --shell /bin/bash --command "cd /tmp && /psql -qtAX --command \\"SELECT 1\\"")
+      allow(PuppetStatusCheck).to receive(:pg_config).with('bindir').and_return(nil)
+      allow(Facter::Core::Execution).to receive(:execute).with(command, { timeout: PuppetStatusCheck.facter_timeout, on_fail: nil }).and_return(nil)
+
+      expect(PuppetStatusCheck.psql_return_result('SELECT 1', '-qtAX')).to be_nil
+    end
+  end
+
   describe '.log_tail_contains?' do
     subject(:contains_error) { PuppetStatusCheck.log_tail_contains?(log_file.path, %r{java.lang.OutOfMemoryError}) }
 

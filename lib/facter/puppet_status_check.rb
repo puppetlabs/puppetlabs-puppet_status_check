@@ -155,10 +155,10 @@ Facter.add(:puppet_status_check, type: :aggregate) do
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     time_now = Time.now - Puppet.settings['runinterval']
-    log_path = "#{File.dirname(Puppet.settings['logdir'].to_s)}/puppetserver/"
-    error_pid_log = Dir.glob("#{log_path}*_err_pid*.log").find { |f| time_now.to_i < File.mtime(f).to_i }
+    log_path = File.join(File.dirname(Puppet.settings['logdir'].to_s), 'puppetserver')
+    error_pid_log = Dir.glob(File.join(log_path, '*_err_pid*.log')).find { |f| time_now.to_i < File.mtime(f).to_i }
     if error_pid_log.nil?
-      log_file = "#{log_path}puppetserver.log"
+      log_file = File.join(log_path, 'puppetserver.log')
       next { S0016: true } unless File.exist?(log_file)
 
       { S0016: !PuppetStatusCheck.log_tail_contains?(log_file, %r{java.lang.OutOfMemoryError}) }
@@ -173,10 +173,10 @@ Facter.add(:puppet_status_check, type: :aggregate) do
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     time_now = Time.now - Puppet.settings['runinterval']
-    log_path = "#{File.dirname(Puppet.settings['logdir'].to_s)}/puppetdb/"
-    error_pid_log = Dir.glob("#{log_path}*_err_pid*.log").find { |f| time_now.to_i < File.mtime(f).to_i }
+    log_path = File.join(File.dirname(Puppet.settings['logdir'].to_s), 'puppetdb')
+    error_pid_log = Dir.glob(File.join(log_path, '*_err_pid*.log')).find { |f| time_now.to_i < File.mtime(f).to_i }
     if error_pid_log.nil?
-      log_file = "#{log_path}puppetdb.log"
+      log_file = File.join(log_path, 'puppetdb.log')
       next { S0017: true } unless File.exist?(log_file)
 
       { S0017: !PuppetStatusCheck.log_tail_contains?(log_file, %r{java.lang.OutOfMemoryError}) }
@@ -399,7 +399,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
     # PuppetServer
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
-    logfile = "#{File.dirname(Puppet.settings['logdir'].to_s)}/puppetserver/puppetserver-access.log"
+    logfile = File.join(File.dirname(Puppet.settings['logdir'].to_s), 'puppetserver', 'puppetserver-access.log')
     next unless File.exist?(logfile)
 
     apache_regex = %r{^(\S+) \S+ (\S+) (?<time>\[([^\]]+)\]) "([A-Z]+) ([^ "]+)? HTTP/[0-9.]+" (?<status>[0-9]{3})} # rubocop:disable Lint/MixedRegexpCaptureTypes

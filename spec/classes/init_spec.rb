@@ -21,11 +21,11 @@ describe 'puppet_status_check' do
           }
         end
 
-        it { is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with('content' => %r{.*"indicator_exclusions": "\[S0001\]".*}) }
+        it { is_expected.to contain_file(File.join(base_path, 'puppet', 'cache', 'state', 'status_check.json')).with('content' => %r{.*"indicator_exclusions": "\[S0001\]".*}) }
       end
 
       context 'with $indicator_exclusions unset' do
-        it { is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with('content' => %r{.*"indicator_exclusions": "\[\]".*}) }
+        it { is_expected.to contain_file(File.join(base_path, 'puppet', 'cache', 'state', 'status_check.json')).with('content' => %r{.*"indicator_exclusions": "\[\]".*}) }
       end
 
       context 'when facts.puppet_status_check.S0001 returns false' do
@@ -63,7 +63,7 @@ describe 'puppet_status_check' do
           }
         end
 
-        it { is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with('ensure' => 'file') }
+        it { is_expected.to contain_file(File.join(base_path, 'puppet', 'cache', 'state', 'status_check.json')).with('ensure' => 'file') }
       end
 
       context 'when $enabled => false' do
@@ -73,7 +73,7 @@ describe 'puppet_status_check' do
           }
         end
 
-        it { is_expected.to contain_file("#{base_path}/puppet/cache/state/status_check.json").with('ensure' => 'absent') }
+        it { is_expected.to contain_file(File.join(base_path, 'puppet', 'cache', 'state', 'status_check.json')).with('ensure' => 'absent') }
       end
     end
   end

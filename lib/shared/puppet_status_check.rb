@@ -76,7 +76,7 @@ module PuppetStatusCheck # rubocop:disable Metrics/ModuleLength
                 else
                   '/etc/default'
                 end
-    File.exist?("#{configdir}/#{configfile}")
+    File.exist?(File.join(configdir, configfile))
   end
 
   # Module method to make a GET request to an api specified by path and port params
@@ -122,7 +122,7 @@ module PuppetStatusCheck # rubocop:disable Metrics/ModuleLength
 
   # Get the maximum defined and current connections to Postgres
   def psql_return_result(sql, psql_options = '')
-    command = %(su postgres --shell /bin/bash --command "cd /tmp && #{pg_config('bindir')}/psql #{psql_options} --command \\"#{sql}\\"")
+    command = %(su postgres --shell /bin/bash --command "cd /tmp && #{File.join(pg_config('bindir').to_s, 'psql')} #{psql_options} --command \\"#{sql}\\"")
     Facter::Core::Execution.execute(command, { timeout: facter_timeout, on_fail: nil })
   end
 
