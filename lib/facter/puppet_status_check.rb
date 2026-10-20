@@ -161,8 +161,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
       log_file = "#{log_path}puppetserver.log"
       next { S0016: true } unless File.exist?(log_file)
 
-      search_for_error = `tail -n 250 #{log_file} | grep 'java.lang.OutOfMemoryError'`
-      { S0016: search_for_error.empty? }
+      { S0016: !PuppetStatusCheck.log_tail_contains?(log_file, %r{java.lang.OutOfMemoryError}) }
     else
       { S0016: false }
     end
@@ -180,8 +179,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
       log_file = "#{log_path}puppetdb.log"
       next { S0017: true } unless File.exist?(log_file)
 
-      search_for_error = `tail -n 250 #{log_file} | grep 'java.lang.OutOfMemoryError'`
-      { S0017: search_for_error.empty? }
+      { S0017: !PuppetStatusCheck.log_tail_contains?(log_file, %r{java.lang.OutOfMemoryError}) }
     else
       { S0017: false }
     end
@@ -358,7 +356,7 @@ Facter.add(:puppet_status_check, type: :aggregate) do
     next unless ['primary', 'compiler'].include?(PuppetStatusCheck.config('role'))
 
     # return false if any Warnings appear in the 'puppet module list...'
-    { S0035: !`/opt/puppetlabs/bin/puppet module list --tree 2>&1`.encode('ASCII', 'UTF-8', undef: :replace).match?(%r{Warning:\s+}) }
+    { S0035: !Puppet::Util::Execution.execute('/opt/puppetlabs/bin/puppet module list --tree', failonfail: false, combine: true).encode('ASCII', 'UTF-8', undef: :replace).match?(%r{Warning:\s+}) }
   end
 
   chunk(:S0036) do

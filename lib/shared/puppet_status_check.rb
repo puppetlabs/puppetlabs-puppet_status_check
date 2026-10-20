@@ -162,6 +162,51 @@ module PuppetStatusCheck # rubocop:disable Metrics/ModuleLength
     psql_return_result(sql, psql_options)
   end
 
+  # Searches the last 250 log lines, stopping at the first match.
+  # Warns and returns false if the file is missing or access is denied.
+  # @param log_file [String] Path to the log file
+  # @param pattern [Regexp, String] Regular expression or expression source to match
+  # @return [Boolean] Whether any of the last 250 lines matches
+  def log_tail_contains?(log_file, pattern)
+    File.open(log_file, 'rb') do |reader|
+      reverse_log_lines(reader).lazy.take(250).any? { |line| line.match?(pattern) }
+    end
+  rescue Errno::ENOENT, Errno::EACCES => e
+    Facter.warn("Error in fact 'puppet_status_check' when reading #{log_file}: #{e.message}")
+    false
+  end
+
+  # Lazily reads complete lines from end to start in 8 KiB blocks.
+  # Preserves line endings and leaves the reader open.
+  # @param reader [File] Seekable log file opened in binary mode
+  # @return [Enumerator<String>] Lines in reverse file order
+  # @note Memory usage scales with the longest line read, not the entire tail.
+  def reverse_log_lines(reader) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    Enumerator.new do |lines|
+      position = reader.size
+      line_fragments = []
+
+      while position.positive?
+        read_size = [position, 8192].min
+        position -= read_size
+        reader.seek(position)
+        chunk = reader.read(read_size)
+        next if chunk.nil?
+
+        chunk.lines.reverse_each do |fragment|
+          if fragment.end_with?("\n") && !line_fragments.empty?
+            lines << line_fragments.reverse.join
+            line_fragments.clear
+          end
+
+          line_fragments << fragment
+        end
+      end
+
+      lines << line_fragments.reverse.join unless line_fragments.empty?
+    end
+  end
+
   # Get the free disk percentage from a path
   # @param path [String] The path on the file system
   # @return [Integer] The percentage of free disk space on the mount
