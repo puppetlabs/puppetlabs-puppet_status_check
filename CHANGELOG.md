@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.10.0](https://github.com/puppetlabs/puppetlabs-puppet_status_check/tree/v0.10.0) - 2026-10-21
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-puppet_status_check/compare/v0.9.3...v0.10.0)
+
+### Changed
+
+- (MODULES-12038) Add Puppet 9 support and harden status-check facts [#16](https://github.com/puppetlabs/puppetlabs-puppet_status_check/pull/16) ([zaben903](https://github.com/zaben903))
+
 ## [v0.9.3](https://github.com/puppetlabs/puppetlabs-puppet_status_check/tree/v0.9.3) - 2024-08-07
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-puppet_status_check/compare/v0.9.2...v0.9.3)
